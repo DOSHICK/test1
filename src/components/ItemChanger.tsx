@@ -19,9 +19,7 @@ const ItemChanger: React.FC<Props> = ({ type }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const fields: FieldConfig[] = template?.fields || [];
-//   const objectTitleName = template?.objectTitle || "";
 
-  // system fields are visible and editable like normal fields but visually separated
   const systemFields = fields.filter(f => f.name === "object_type" || f.name === "object_title");
   const userFields = fields.filter(f => f.name !== "object_type" && f.name !== "object_title");
 

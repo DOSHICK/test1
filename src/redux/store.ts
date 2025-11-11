@@ -17,18 +17,15 @@ const saveToLocalStorage = (key: string, data: any) => {
   } catch {}
 };
 
-// безопасная загрузка items: поддерживаем старую форму (массив) и новую (map)
 const loadItemsState = (): { items: Record<string, any> } => {
   try {
     const raw = loadFromLocalStorage<any>("items");
     if (!raw) return { items: {} };
 
-    // если уже в форме { items: { ... } }
     if (raw.items && typeof raw.items === "object" && !Array.isArray(raw.items)) {
       return { items: raw.items };
     }
 
-    // если в localStorage лежал массив ItemData[]
     if (Array.isArray(raw)) {
       const map: Record<string, any> = {};
       raw.forEach((it) => {
@@ -37,7 +34,6 @@ const loadItemsState = (): { items: Record<string, any> } => {
       return { items: map };
     }
 
-    // если в localStorage лежит объект-словарь (map)
     if (typeof raw === "object") {
       const vals = Object.values(raw);
       if (vals.length === 0 || vals.every((v) => v && v.id)) {

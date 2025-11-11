@@ -73,14 +73,12 @@ const templatesSlice = createSlice({
       }
     },
 
-    // alias для совместимости с импортами deleteTemplate
     deleteTemplate(state, action: PayloadAction<string>) {
       if (state.templates && state.templates[action.payload]) {
         delete state.templates[action.payload];
       }
     },
 
-    // addField поддерживает payload { type, field } или { templateKey, field }
     addField(state, action: PayloadAction<{ type?: string; templateKey?: string; field: FieldConfig }>) {
       const key = action.payload.templateKey ?? action.payload.type;
       const tpl = ensureTemplateObject(state, key);
@@ -90,7 +88,6 @@ const templatesSlice = createSlice({
       }
     },
 
-    // updateField поддерживает { type, index, field } и { type, fieldName, patch }
     updateField(
       state,
       action: PayloadAction<{
@@ -127,7 +124,6 @@ const templatesSlice = createSlice({
       }
     },
 
-    // deleteField поддерживает { type, index } и { type, fieldName }
     deleteField(state, action: PayloadAction<{ type?: string; templateKey?: string; index?: number; fieldName?: string }>) {
       const key = action.payload.templateKey ?? action.payload.type;
       const tpl = ensureTemplateObject(state, key);
@@ -145,7 +141,6 @@ const templatesSlice = createSlice({
       }
     },
 
-    // system fields API если понадобится отдельно
     addSystemField(state, action: PayloadAction<{ type?: string; templateKey?: string; field: FieldConfig }>) {
       const key = action.payload.templateKey ?? action.payload.type;
       const tpl = ensureTemplateObject(state, key);
@@ -186,7 +181,6 @@ export const {
   removeSystemField,
 } = templatesSlice.actions;
 
-// thunk для совместимости с предыдущей логикой создания страницы при добавлении шаблона
 export const addTemplateAndCreatePage = createAsyncThunk<Template, Template, { state: any; rejectValue: string }>(
   "templates/addTemplateAndCreatePage",
   async (template, thunkAPI) => {

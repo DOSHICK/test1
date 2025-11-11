@@ -25,17 +25,14 @@ const initialState: ItemsState = {
   items: {},
 };
 
-// helper: найти шаблон по item.type (сопоставляет и по ключу, и по object_type.label)
 const findTemplateForItem = (
   templates: Record<string, Template> | undefined,
   itemType?: string
 ): Template | undefined => {
   if (!templates || !itemType) return undefined;
 
-  // прямое совпадение ключа
   if (templates[itemType]) return templates[itemType];
 
-  // иначе ищем шаблон, у которого поле object_type имеет label === itemType
   for (const tpl of Object.values(templates)) {
     const objField = tpl.fields?.find((f) => f.name === "object_type");
     if (objField && objField.label === itemType) return tpl;
@@ -79,8 +76,6 @@ const itemsSlice = createSlice({
       }
     },
 
-    // Синхронизация существующих items с текущими шаблонами
-    // payload: Record<string, Template>
     syncWithTemplates(state, action: PayloadAction<Record<string, Template>>) {
       const templates = action.payload || {};
       Object.values(state.items ?? {}).forEach((item) => {
@@ -90,14 +85,12 @@ const itemsSlice = createSlice({
 
         item.values = item.values ?? {};
 
-        // добавить недостающие поля с дефолтами
         fields.forEach((f) => {
           if (!(f.name in item.values)) {
             item.values[f.name] = f.default ?? "";
           }
         });
 
-        // удалить лишние ключи (опционально — можно убрать этот блок, если нужно сохранять старые данные)
         Object.keys(item.values).forEach((k) => {
           if (!allowed.has(k)) delete item.values[k];
         });
