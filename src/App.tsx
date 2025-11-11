@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "./redux/store";
+import { syncWithTemplates } from "./redux/itemsSlice";
+import List from "./components/List";
+import TemplatesPage from "./pages/TemplatesPage";
+import AllPage from "./pages/AllPage";
+import Header from "./components/Header";
 
-function App() {
-  const [count, setCount] = useState(0)
+const TemplatesSyncer: React.FC = () => {
+  const templates = useSelector((s: RootState) => s.templates ?? {});
+  const dispatch = useDispatch<AppDispatch>();
+  const templatesJson = JSON.stringify(templates);
 
+  useEffect(() => {
+    dispatch(syncWithTemplates(templates));
+  }, [dispatch, templatesJson]);
+
+  return null;
+};
+
+const App: React.FC = () => {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <TemplatesSyncer />
+      <Header />
 
-export default App
+      <main className="p-4">
+        <Routes>
+          <Route path="/all" element={<List />} />
+          <Route path="/templates" element={<TemplatesPage />} />
+          <Route path="/items/:id" element={<AllPage />} />
+        </Routes>
+      </main>
+    </>
+  );
+};
+
+export default App;
